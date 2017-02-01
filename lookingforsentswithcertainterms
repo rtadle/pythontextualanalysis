@@ -1,0 +1,43 @@
+import nltk, zipfile, argparse, collections, re, string
+
+# The chosen sample file '20101012.txt' is the minutes in which the term "bubble" was used
+
+# This is the list of keywords I will be using:
+wanted = set(['inflation', 'employment', 'unemployment'])
+
+# This opens the text and places all letters in lowercase:
+text = open('20101012.txt').read().lower()
+
+# This divides the text into a list of sentences
+sentences = nltk.sent_tokenize(text)
+
+# TOKENIZING THE WORDS:
+# First, I need to create a list for the relevant sentences (those with the keywords)
+doc_sentences = []
+
+# To look for the sentences with a specific word:
+# print re.findall(r"([^.]*?%s[^.]*\.)" % 'increased employment modestly',text)
+
+# for each sentence (i.e. a string):
+for sent in sentences:
+    # tokenize the words -- returns a list of tokens
+    sentence_words = nltk.word_tokenize(sent)
+    # This goes through each word in sentence_words:
+    for word in sentence_words:
+        # This checks to see whether the word is in the list named "wanted":        
+        if word in wanted:
+            # If the word is in the list "wanted", the whole sentence is added to the list of relevant sentences
+            doc_sentences.append(sent)
+
+# Now, to implement the scoring, I have another set of score trigger words. This is the most basic analysis and need to expand based
+# on the context and grammar by refining this:
+postriggers = set(['expansion','high'])
+triggers = set(['low', 'recession'])
+
+# I then need a for-loop for each sentence to determine the scoring:
+for sentence in doc_sentences:
+    # This again tokenizes the sentence for words:    
+    words_in_sentence = nltk.word_tokenize(sent)
+    
+
+print doc_sentences
