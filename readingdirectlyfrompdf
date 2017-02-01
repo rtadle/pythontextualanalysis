@@ -1,0 +1,49 @@
+#!/bin/env python 3.3.2
+
+import PyPDF2, nltk, re
+
+def pdftotextbypage(pdffilepage):
+
+    # This creates a list of sentences:
+    sentence_list = []
+
+    texttodecipher = pdffilepage.extractText().lstrip()
+    
+    # This transforms the unicode file to string formatting:
+    texttostring = texttodecipher.encode('ascii','ignore')    
+    
+    # This separates sentences in the file:
+    sentences = nltk.sent_tokenize(texttostring)    
+    
+    for sent in sentences:
+        
+        # This defines the conditions on how to 'clean' up the sentences:
+        rep = {"-\n": "", "\n": ""}    
+        #sample_sentence.replace('-\n', '')    
+        
+        # Use these three lines to do the replacement:
+        rep = dict((re.escape(k), v) for k, v in rep.iteritems())
+        pattern = re.compile("|".join(rep.keys()))
+        text = pattern.sub(lambda m: rep[re.escape(m.group(0))], sent)        
+        sentence_list.append(text)
+    
+    return sentence_list
+    
+
+def pdftotext(file):
+
+    pdf_complete_sentlist = []    
+    
+    # This extracts the text from the pdf:
+    pdfFileObj = open(file+'.pdf', 'rb')
+    pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
+    for pageNum in range(0, pdfReader.numPages):
+        pageObj = pdfReader.getPage(pageNum)
+        pdf_complete_sentlist.extend(pdftotextbypage(pageObj))
+    
+    print(pdf_complete_sentlist)    
+    
+    return pdf_complete_sentlist
+    
+
+pdftotext('monetary20160316a1')
