@@ -1,0 +1,23 @@
+#!/bin/env python 3.3.2
+import collections
+import re
+
+# Defining a function named "findWords".
+def findWords(filepath):
+  with open(filepath) as infile:
+    for line in infile:
+      words = re.findall('\w+', line.lower())
+      yield from words
+
+phcnt = collections.Counter()
+
+from itertools import tee
+phrases = {'inflation target', 'forward guidance','exit strategy','car sales','house prices','equity prices','asset price','asset prices','asset market','asset markets','stock price','stock prices','stock market'}
+fw1, fw2 = tee(findWords('12-18-2013.txt'))   
+next(fw2)
+for w1,w2 in zip(fw1, fw2):
+  phrase = ' '.join([w1, w2])
+  if phrase in phrases:
+    phcnt[phrase] += 1
+
+print(phcnt)
